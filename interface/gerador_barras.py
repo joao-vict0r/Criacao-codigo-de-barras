@@ -16,7 +16,7 @@ def criar_codigo_barras(destino='codigo_barras'):
     codigo = ''.join(random.choices('0123456789', k=12))  # 12 dígitos numéricos aleatórios
     barcode_file = os.path.join(subpasta, f"{codigo}.png")  # Caminho completo para o arquivo
 
-    # Gera o código de barras usando o formato CODE128
+    
     code = barcode.get('code128', codigo, writer=ImageWriter())
     barcode_file = code.save(barcode_file)  # Salva o arquivo no destino completo
 
