@@ -19,17 +19,28 @@ def gerar_codigo_barras():
 def exibir_imagem(caminho_imagem):
     """Exibe a imagem do código de barras na interface."""
     img = Image.open(caminho_imagem)
-    img = img.resize((300, 150), Image.Resampling.LANCZOS)  # Substitui ANTIALIAS por Resampling.LANCZOS
+    img = img.resize((300, 150), Image.Resampling.LANCZOS)  
     img_tk = ImageTk.PhotoImage(img)
     canvas_imagem.create_image(0, 0, anchor=tk.NW, image=img_tk)
     canvas_imagem.image = img_tk
+
+def imprimir_codigo_barras():
+    """Imprime a imagem do código de barras."""
+    try:
+        caminho_imagem = canvas_imagem.image.cget("file")
+        if caminho_imagem:
+            os.startfile(caminho_imagem, "print")
+        else:
+            messagebox.showerror("Erro", "Nenhum código de barras gerado para imprimir.")
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao imprimir código de barras:\n{str(e)}")
 
 # Criação da interface principal
 janela = tk.Tk()
 janela.title("Gerador de Código de Barras")
 
-frame_destino = tk.Frame(janela)
-frame_destino.pack(pady=10)
+frame_botao = tk.Frame(janela)
+frame_botao.pack(pady=10, anchor=tk.CENTER)
 
 canvas_imagem = tk.Canvas(janela, width=300, height=150)
 canvas_imagem.pack(pady=10)
@@ -39,6 +50,11 @@ label_codigo = tk.Label(janela, text="Código gerado: ")
 label_codigo.pack(pady=10)
 
 # Botão para gerar o código de barras
-botao_gerar = tk.Button(janela, text="Gerar Código de Barras", command=gerar_codigo_barras)
-botao_gerar.pack(pady=10)
+botao_gerar = tk.Button(frame_botao, text="Gerar Código de Barras", command=gerar_codigo_barras)
+botao_gerar.pack(side=tk.LEFT, padx=5)
+
+# Botão para imprimir o código de barras
+botao_imprimir = tk.Button(frame_botao, text="Imprimir Código de Barras", command=imprimir_codigo_barras)
+botao_imprimir.pack(side=tk.RIGHT, padx=5)
+
 janela.mainloop()
