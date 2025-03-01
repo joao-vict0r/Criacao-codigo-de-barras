@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from gerador_barras import criar_codigo_barras
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 def gerar_codigo_barras():
     # Pasta local onde o código de barras será salvo
@@ -27,12 +29,24 @@ def exibir_imagem(caminho_imagem):
     canvas_imagem.image = img_tk
 
 def imprimir_codigo_barras():
-    """Imprime a imagem do código de barras."""
+    """Imprime a imagem do código de barras ou salva em PDF se não encontrar impressora."""
     try:
         caminho_imagem = canvas_imagem.image.cget("file")
         os.startfile(caminho_imagem, "print")
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao imprimir código de barras:\n{str(e)}")
+        salvar_em_pdf(caminho_imagem)
+        messagebox.showerror("Erro", f"Erro ao imprimir código de barras. Salvo como PDF:\n{str(e)}")
+
+def salvar_em_pdf(caminho_imagem):
+    """Salva a imagem do código de barras em um arquivo PDF."""
+    try:
+        pdf_path = caminho_imagem.replace(".png", ".pdf")
+        c = canvas.Canvas(pdf_path, pagesize=letter)
+        c.drawImage(caminho_imagem, 100, 500, width=300, height=150)
+        c.save()
+        messagebox.showinfo("Sucesso", f"Código de barras salvo como PDF em:\n{pdf_path}")
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao salvar código de barras como PDF:\n{str(e)}")
 
 # Criação da interface principal
 janela = tk.Tk()
