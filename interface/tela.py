@@ -5,13 +5,15 @@ from PIL import Image, ImageTk
 from gerador_barras import criar_codigo_barras
 
 def gerar_codigo_barras():
+    # Pasta local onde o código de barras será salvo
     destino_pasta = r"C:/Users/Joaov/Ambiente de Trabalho/Python projets/auto_boots/gerador_codigo_de_barras/imagem_etiqueta"
     
     try:
-        # Chama a função para gerar o código de barras
+        # Gera o código de barras e salva a imagem
         caminho_imagem, codigo = criar_codigo_barras(destino=destino_pasta)
         exibir_imagem(caminho_imagem)
         label_codigo.config(text=f"Código gerado: {codigo}")
+
         messagebox.showinfo("Sucesso", f"Código de barras gerado e salvo em:\n{caminho_imagem}")
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao gerar código de barras:\n{str(e)}")
@@ -19,7 +21,7 @@ def gerar_codigo_barras():
 def exibir_imagem(caminho_imagem):
     """Exibe a imagem do código de barras na interface."""
     img = Image.open(caminho_imagem)
-    img = img.resize((300, 150), Image.Resampling.LANCZOS)  
+    img = img.resize((300, 150), Image.Resampling.LANCZOS)
     img_tk = ImageTk.PhotoImage(img)
     canvas_imagem.create_image(0, 0, anchor=tk.NW, image=img_tk)
     canvas_imagem.image = img_tk
@@ -28,10 +30,7 @@ def imprimir_codigo_barras():
     """Imprime a imagem do código de barras."""
     try:
         caminho_imagem = canvas_imagem.image.cget("file")
-        if caminho_imagem:
-            os.startfile(caminho_imagem, "print")
-        else:
-            messagebox.showerror("Erro", "Nenhum código de barras gerado para imprimir.")
+        os.startfile(caminho_imagem, "print")
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao imprimir código de barras:\n{str(e)}")
 
@@ -55,6 +54,6 @@ botao_gerar.pack(side=tk.LEFT, padx=5)
 
 # Botão para imprimir o código de barras
 botao_imprimir = tk.Button(frame_botao, text="Imprimir Código de Barras", command=imprimir_codigo_barras)
-botao_imprimir.pack(side=tk.RIGHT, padx=5)
+botao_imprimir.pack(side=tk.LEFT, padx=5)
 
 janela.mainloop()
