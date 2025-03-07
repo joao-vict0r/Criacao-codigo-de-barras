@@ -5,6 +5,8 @@ from PIL import Image, ImageTk
 from gerador_barras import criar_codigo_barras
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+import win32print
+import win32api
 
 def gerar_codigo_barras():
     # Pasta local onde o código de barras será salvo
@@ -32,7 +34,11 @@ def imprimir_codigo_barras():
     """Imprime a imagem do código de barras ou salva em PDF se não encontrar impressora."""
     try:
         caminho_imagem = canvas_imagem.image.cget("file")
-        os.startfile(caminho_imagem, "print")
+        printer_name = win32print.GetDefaultPrinter()
+        if printer_name:
+            win32api.ShellExecute(0, "print", caminho_imagem, f'/d:"{printer_name}"', ".", 0)
+        else:
+            raise Exception("Nenhuma impressora padrão encontrada")
     except Exception as e:
         salvar_em_pdf(caminho_imagem)
         messagebox.showerror("Erro", f"Erro ao imprimir código de barras. Salvo como PDF:\n{str(e)}")
